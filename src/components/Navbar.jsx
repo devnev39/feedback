@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import {
   MDBNavbar,
   MDBContainer,
@@ -12,10 +12,13 @@ import {
   MDBIcon,
   MDBTypography
 } from 'mdb-react-ui-kit';
+import { UserContext } from '../context/UserContext';
+import {useSelector} from 'react-redux';
 
 export default function Navbar() {
   const [openNavNoTogglerThird, setOpenNavNoTogglerThird] = useState(false);
-
+  const {googleSignIn, logout} = useContext(UserContext);
+  const user = useSelector((state) => state.user.user);
   return (
     <>
       <MDBNavbar expand='lg' light bgColor='light'>
@@ -46,14 +49,19 @@ export default function Navbar() {
                 <MDBNavbarLink active={window.location.href.endsWith('/feedback')} href='/feedback'>Feedback</MDBNavbarLink>
               </MDBNavbarItem>
               <MDBNavbarItem>
+                <MDBNavbarLink active={window.location.href.endsWith('/iam')} href='/iam' tabIndex={-1}>
+                  IAM
+                </MDBNavbarLink>
+              </MDBNavbarItem>
+              <MDBNavbarItem>
                 <MDBNavbarLink active={window.location.href.endsWith('/about')} href='/about' tabIndex={-1}>
                   About
                 </MDBNavbarLink>
               </MDBNavbarItem>
             </MDBNavbarNav>
           </MDBCollapse>
-          <MDBBtn color='secondary' floating tag={'a'}>
-            <MDBIcon fab icon="google" />
+          <MDBBtn onClick={() => user ? logout() : googleSignIn()} color='secondary' floating tag={'a'}>
+            {user ? <MDBIcon color='danger' fas icon="sign-out-alt" />: <MDBIcon color='success' fab icon="google" />}
           </MDBBtn>
         </MDBContainer>
       </MDBNavbar>
