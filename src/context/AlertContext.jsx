@@ -9,7 +9,7 @@ export const AlertContextProvider = ({ children }) => {
 
     const showMessage = (text, type) => {
         setMessage(text);
-        setType(type);
+        if (type) setType(type);
         setShowToast(true);
     }
     
