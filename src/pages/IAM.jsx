@@ -84,7 +84,11 @@ export default function IAM() {
 
     const updateProjectClicked = (p) => {
         setProjectUpdating(true);
-        setProjectState(JSON.parse(JSON.stringify(p)));
+        const proj = JSON.parse(JSON.stringify(p));
+        for (let q of proj.questions) {
+            q.options = q.options.join(',');
+        }
+        setProjectState(proj);
         toggleOpen();
     }
 
@@ -100,6 +104,7 @@ export default function IAM() {
                 resetProjectState();
                 toggleOpen();
             }).catch((err) => {
+                console.log(err);
                 showMessage(err.message, 'error');
             }).finally(() => setSubmitting(false));
         } else {
@@ -114,6 +119,7 @@ export default function IAM() {
                 resetProjectState();
                 toggleOpen();
             }).catch((err) => {
+                console.log(err);
                 showMessage(err.message, 'error');
             }).finally(() => setSubmitting(false));
         }
@@ -197,12 +203,14 @@ export default function IAM() {
                         enableReinitialize
                         validationSchema={Yup.object({
                             name: Yup.string().required('Required'),
-                            links: Yup.array().of(Yup.object()),
-                            questions: Yup.array().of(Yup.object().shape({
-                                text: Yup.string(),
-                                options: Yup.string(),
-                                selected: Yup.number()
-                            }))
+                            // links: Yup.array().of(Yup.object().shape({
+                            //     link: Yup.string(),
+                            //     type: Yup.string()
+                            // })),
+                            // questions: Yup.array().of(Yup.object().shape({
+                            //     text: Yup.string(),
+                            //     options: Yup.string()
+                            // }))
                         })}
                         onSubmit={(values, {setSubmitting}) => addUpdateProject(values, setSubmitting)}
                         >
