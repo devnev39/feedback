@@ -2,11 +2,6 @@ import React, { useContext, useEffect, useState } from 'react'
 import {useSelector, useDispatch} from 'react-redux';
 import * as Yup from 'yup';
 import {
-  MDBTabs,
-  MDBTabsItem,
-  MDBTabsLink,
-  MDBTabsContent,
-  MDBTabsPane,
   MDBTable,
   MDBCard,
   MDBCardBody,
@@ -23,8 +18,9 @@ import {
   MDBModalBody,
   MDBModalFooter,
   MDBRadio,
-  MDBInput,
-  MDBIcon
+  MDBIcon,
+  MDBListGroup,
+  MDBListGroupItem
 } from 'mdb-react-ui-kit';
 import Rating from 'react-rating';
 import projectApi from '../api/project';
@@ -299,27 +295,27 @@ export default function Feedback() {
                       {
                       (formik) => (
                           <form id='feedbackForm' onSubmit={formik.handleSubmit}>
-                            <div>
+                            <div className='my-3'>
                               <MDBTypography listInLine>
                                 <li className='list-inline-item'>
-                                  <MDBTypography className='mark'>Links :</MDBTypography>
+                                  <MDBTypography className='mark fs-5'>Links :</MDBTypography>
                                 </li>
                                 {selectedProject.links.map((l,i) => (
                                   <li key={i} className='mx-2 list-inline-item'>
-                                    <MDBBtn type='button' color='link' className='text-primary' onClick={() => window.open(l.link)}>{l.type}</MDBBtn>
+                                    <MDBBtn size='sm' type='button' color='link' className='text-primary' onClick={() => window.open(l.link)}>{l.type}</MDBBtn>
                                   </li>
                                 ))}
                               </MDBTypography>
                             </div>
                             <div>
-                              <MDBTypography className='mark'>
-                                Questions
+                              <MDBTypography className='mark fs-5'>
+                                Questions :
                               </MDBTypography>
-                              <div>
+                              <MDBListGroup>
                                 {
                                   formik.values.questions.map((q,i) => (
-                                    <div key={i}>
-                                      <MDBTypography>
+                                    <MDBListGroupItem key={i}>
+                                      <MDBTypography className='my-2'>
                                         {q.text}
                                       </MDBTypography>
                                       <div className='d-flex justify-content-equal'>
@@ -333,10 +329,10 @@ export default function Feedback() {
                                           ))
                                         }
                                       </div>
-                                    </div>
+                                    </MDBListGroupItem>
                                   ))
                                 }
-                              </div>
+                              </MDBListGroup>
                             </div>
                             <hr className='hr'/>
                             <div className='d-flex justify-content-evenly align-items-center'>
