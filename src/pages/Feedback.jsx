@@ -315,7 +315,7 @@ export default function Feedback() {
                                 {
                                   formik.values.questions.map((q,i) => (
                                     <MDBListGroupItem key={i}>
-                                      <MDBTypography className='my-2'>
+                                      <MDBTypography className='my-2 h6'>
                                         {q.text}
                                       </MDBTypography>
                                       <div className='d-flex justify-content-equal'>
