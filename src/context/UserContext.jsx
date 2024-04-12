@@ -25,7 +25,7 @@ export const UserContextProvider = ({children}) => {
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
             setUser(currentUser);
-            if (!currentUser) return;
+            if (!currentUser) dispatch(setAppUser({}));
             userApi.getUser(currentUser.email).then((data) => {
                 if (data) {
                     dispatch(setAppUser(data));

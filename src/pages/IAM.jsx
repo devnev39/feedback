@@ -1,5 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import projectApi from '../api/project';
+import feedbackApi from '../api/feedback';
+import usersApi from '../api/user';
 import * as Yup from 'yup';
 import {
     MDBTabs,
@@ -10,7 +12,6 @@ import {
     MDBTable,
     MDBCard,
     MDBCardBody,
-    MDBCardTitle,
     MDBTypography,
     MDBTableHead,
     MDBTableBody,
@@ -30,12 +31,17 @@ import { clearProjects, removeProject, setProjects, updateProject } from '../fea
 import { AlertContext } from '../context/AlertContext';
 import dayjs from 'dayjs';
 import { Formik } from 'formik';
+import { clearFeedbacks, setFeedbacks } from '../feature/feedback';
+import { clearUsers, setUsers } from '../feature/users';
 
 
 export default function IAM() {
     const [basicModal, setBasicModal] = useState(false);
 
     const user = useSelector((state) => state.user.user);
+    const projects = useSelector((state) => state.project.projects);
+    const feedbacks = useSelector((state) => state.feedback.feedbacks);
+    const users = useSelector((state) => state.user.users);
 
     const [projectState, setProjectState] = useState({
         name: "",
@@ -67,7 +73,6 @@ export default function IAM() {
 
     const {showMessage} = useContext(AlertContext);
     const dispatch = useDispatch();
-    const projects = useSelector((state) => state.project.projects);
 
     useEffect(() => {
         projectApi.getProjects().then((resp) => {
@@ -77,8 +82,23 @@ export default function IAM() {
             showMessage(err.message, 'error');
         });
 
+        feedbackApi.getFeedbacks().then((resp) => {
+            dispatch(clearFeedbacks());
+            dispatch(setFeedbacks(resp));
+        }).catch((err) => {
+            showMessage(err.message, 'error');
+        });
+
+        usersApi.getUsers().then((resp) => {
+            dispatch(clearUsers());
+            dispatch(setUsers(resp));
+        }).catch((err) => {
+            showMessage(err.message, 'error');
+        });
+
         () => {
             dispatch(clearProjects());
+            dispatch(clearFeedbacks());
         }
     }, []);
 
@@ -144,6 +164,11 @@ export default function IAM() {
                 <MDBTabsItem>
                     <MDBTabsLink onClick={() => handleFillClick('tab1')} active={fillActive === 'tab1'}>
                         Projects
+                </MDBTabsLink>
+                    </MDBTabsItem>
+                <MDBTabsItem>
+                    <MDBTabsLink onClick={() => handleFillClick('tab2')} active={fillActive === 'tab2'}>
+                        Users
                     </MDBTabsLink>
                 </MDBTabsItem>
             </MDBTabs>
@@ -172,10 +197,12 @@ export default function IAM() {
                                                     <td>{projects.findIndex((pr) => pr.id == p.id) + 1}</td>
                                                     <td>{p.name}</td>
                                                     <td>{dayjs(p.createdAt).toDate().toLocaleString()}</td>
-                                                    <td></td>
                                                     <td>
-                                                        <MDBBtn type='button' color='link' onClick={() => updateProjectClicked(p)} className='text-info'>Edit</MDBBtn>
-                                                        <MDBBtn type='button' color='link' onClick={() => deleteProject(p)} className='text-danger'>Delete</MDBBtn>
+                                                        {feedbacks.filter((f) => f.project.id == p.id).length}
+                                                    </td>
+                                                    <td>
+                                                        <MDBBtn type='button' color='link' onClick={() => updateProjectClicked(p)} className='text-info'><MDBIcon fas icon="pencil-alt" /></MDBBtn>
+                                                        <MDBBtn type='button' color='link' onClick={() => deleteProject(p)} className='text-danger'><MDBIcon fas icon="trash" /></MDBBtn>
                                                     </td>
                                                 </tr>
                                             ))}
@@ -185,6 +212,43 @@ export default function IAM() {
                             </div>
                             <div className='d-flex justify-content-center my-3'>
                                 <MDBBtn onClick={toggleOpen}>Add</MDBBtn>
+                            </div>
+                        </MDBCardBody>
+                    </MDBCard>
+                </MDBTabsPane>
+                <MDBTabsPane open={fillActive === 'tab2'}>
+                    <MDBCard>
+                        <div className='my-2 d-flex justify-content-center'>
+                            <MDBTypography className='display-6'>
+                                Users
+                            </MDBTypography>
+                        </div>
+                        <MDBCardBody>
+                            <div className='d-flex justify-content-center'>
+                                <div className='border rounded overflow-auto' style={{maxHeight: "60vh"}}>
+                                    <MDBTable striped>
+                                        <MDBTableHead>
+                                            <tr>
+                                                <th scope='col'>#</th>
+                                                <th scope='col'>Email</th>
+                                                <th scope='col'>Display Name</th>
+                                                <th scope='col'>Feedbacks Received</th>
+                                            </tr>
+                                        </MDBTableHead>
+                                        <MDBTableBody>
+                                            {
+                                                users.map((u, i) => (
+                                                    <tr key={u.email}>
+                                                        <td>{i+1}</td>
+                                                        <td>{u.email}</td>
+                                                        <td>{u.displayName}</td>
+                                                        <td>{feedbacks.filter((f) => f.user.email == u.email).length}</td>
+                                                    </tr>
+                                                ))
+                                            }
+                                        </MDBTableBody>
+                                    </MDBTable>
+                                </div>
                             </div>
                         </MDBCardBody>
                     </MDBCard>

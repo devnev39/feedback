@@ -61,7 +61,11 @@ export default function Navbar() {
             </MDBNavbarNav>
           </MDBCollapse>
           <MDBBtn onClick={() => Object.keys(user).length ? logout() : googleSignIn()} color='secondary' floating tag={'a'}>
-            {Object.keys(user).length ? <MDBIcon color='danger' fas icon="sign-out-alt" />: <MDBIcon color='success' fab icon="google" />}
+            {Object.keys(user).length ? <img
+              src={user.photoUrl}
+              className='img-fluid'
+              alt={user.displayName}
+            />: <MDBIcon color='success' fab icon="google" />}
           </MDBBtn>
         </MDBContainer>
       </MDBNavbar>

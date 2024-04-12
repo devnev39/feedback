@@ -1,4 +1,4 @@
-import { doc, getDoc, setDoc } from "firebase/firestore"
+import { collection, doc, getDoc, getDocs, setDoc } from "firebase/firestore"
 import { db } from "../db/firebase"
 
 export default {
@@ -11,5 +11,10 @@ export default {
         await setDoc(doc(db, 'users', user.email), user);
         const u = await getDoc(doc(db, 'users', user.email));
         return u.data();
+    },
+
+    getUsers: async () => {
+        const users = await getDocs(collection(db, 'users'));
+        return users.docs.map((u) => u.data());
     }
 }

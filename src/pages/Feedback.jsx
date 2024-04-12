@@ -41,6 +41,8 @@ export default function Feedback() {
   const feedbacks = useSelector((state) => state.feedback.feedbacks);
   const user = useSelector((state) => state.user.user);
 
+  const [widht, setWidth] = useState(window.innerWidth);
+
   const {showMessage} = useContext(AlertContext);
 
   const dispatch = useDispatch();
@@ -99,7 +101,18 @@ export default function Feedback() {
     setFeedbackId(null);
   }
 
-  useEffect(() => {console.log(selectedProject)}, [selectedProject]);
+  useEffect(() => {
+    const handleResize = () => {
+      setWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
 
   const addUpdateFeedback = (values, setSubmitting) => {
     console.log(values);
@@ -183,7 +196,7 @@ export default function Feedback() {
             </MDBCardTitle>
             <MDBCardBody>
               <div className='border rounded overflow-auto' style={{maxHeight: "60vh"}}>
-                <MDBTable>
+                <MDBTable striped small={widht < 500 ? true : false}>
                   <MDBTableHead>
                     <tr>
                       <th scope='col'>#</th>
@@ -202,8 +215,8 @@ export default function Feedback() {
                           <td>{f.project.name}</td>
                           <td><Rating initialRating={f.project.rating} readonly emptySymbol={<MDBIcon className='text-danger' far icon="star" />} fullSymbol={<MDBIcon className='text-info' fas icon="star" />} /></td>
                           <td>
-                            <MDBBtn color='link' className='text-warning' onClick={() => updateFeedbackClicked(f)}>Edit</MDBBtn>
-                            <MDBBtn color='link' className='text-danger' onClick={() => deleteFeedback(f)} disabled={!user.rootUser}>Delete</MDBBtn>
+                            <MDBBtn size='sm' color='link' className='text-warning' onClick={() => updateFeedbackClicked(f)}><MDBIcon fas icon="pencil-alt" /></MDBBtn>
+                            <MDBBtn size='sm' color='link' className='text-danger' onClick={() => deleteFeedback(f)} disabled={!user.rootUser}><MDBIcon fas icon="trash" /></MDBBtn>
                           </td>
                         </tr>
                       ))
@@ -219,12 +232,12 @@ export default function Feedback() {
                             {
                               user.rootUser ?
                               <>
-                              <MDBBtn color='link' className='text-warning' onClick={() => updateFeedbackClicked(f)}>Edit</MDBBtn>
-                              <MDBBtn color='link' className='text-danger' onClick={() => deleteFeedback(f)} disabled={!user.rootUser}>Delete</MDBBtn> 
+                              <MDBBtn size='sm' color='link' className='text-warning' onClick={() => updateFeedbackClicked(f)}><MDBIcon fas icon="pencil-alt" /></MDBBtn>
+                              <MDBBtn size='sm' color='link' className='text-danger' onClick={() => deleteFeedback(f)} disabled={!user.rootUser}><MDBIcon fas icon="trash" /></MDBBtn> 
                               </>
                               :
                               <MDBBtn color='link' className='text-info' onClick={() => viewFeedback(f)}>
-                                View
+                                <MDBIcon fas icon="eye" />
                               </MDBBtn>
                             }
                             
@@ -293,7 +306,7 @@ export default function Feedback() {
                                 </li>
                                 {selectedProject.links.map((l,i) => (
                                   <li key={i} className='mx-2 list-inline-item'>
-                                    <MDBTypography className='text-primary' onClick={() => window.open(l.link)}>{l.type}</MDBTypography>
+                                    <MDBBtn type='button' color='link' className='text-primary' onClick={() => window.open(l.link)}>{l.type}</MDBBtn>
                                   </li>
                                 ))}
                               </MDBTypography>
