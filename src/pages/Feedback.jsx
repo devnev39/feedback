@@ -111,7 +111,10 @@ export default function Feedback() {
 
 
   const addUpdateFeedback = (values, setSubmitting) => {
-    console.log(values);
+    if (values.name == "") {
+      showMessage('Please select a project !', 'info');
+      return;
+    }
     if (!values.rating) {
       showMessage('Please leave some rating !', 'info');
       return;
@@ -123,7 +126,7 @@ export default function Feedback() {
         return;
       }
     }
-
+    delete values.extra;
     const feedback = {id: feedbackId};
     feedback.project = values;
 
