@@ -230,6 +230,7 @@ export default function IAM() {
                                         <MDBTableHead>
                                             <tr>
                                                 <th scope='col'>#</th>
+                                                <th scope='col'>Icon</th>
                                                 <th scope='col'>Email</th>
                                                 <th scope='col'>Display Name</th>
                                                 <th scope='col'>Feedbacks Received</th>
@@ -240,7 +241,12 @@ export default function IAM() {
                                                 users.map((u, i) => (
                                                     <tr key={u.email}>
                                                         <td>{i+1}</td>
-                                                        <td>{u.email}</td>
+                                                        <td>
+                                                            <img src={u.photoUrl} className='rounded-circle' style={{maxHeight: "5vh"}}/>
+                                                        </td>
+                                                        <td>    
+                                                            <MDBTypography>{u.email}</MDBTypography>
+                                                        </td>
                                                         <td>{u.displayName}</td>
                                                         <td>{feedbacks.filter((f) => f.user.email == u.email).length}</td>
                                                     </tr>
